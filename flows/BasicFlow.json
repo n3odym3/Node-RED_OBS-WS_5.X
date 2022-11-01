@@ -1,0 +1,642 @@
+[
+    {
+        "id": "b7d831285641cc2f",
+        "type": "group",
+        "z": "4f37c0534953b353",
+        "name": "Connection",
+        "style": {
+            "stroke": "#000000",
+            "fill": "#ffdf7f",
+            "fill-opacity": "0.51",
+            "label": true,
+            "color": "#000000"
+        },
+        "nodes": [
+            "391a979a4a4c1fc1",
+            "a60d381e56a54435",
+            "9006d213aaee1cd8",
+            "3787becc015fa073",
+            "45780b6f11f5b99a",
+            "90d567eaddb20e3a",
+            "c846858f1c91f5de",
+            "9ee3b7ccf1147e28",
+            "cd0687167dd19b85",
+            "581780d8dc6ccd30",
+            "f27781296b87a4af"
+        ],
+        "x": 44,
+        "y": 39,
+        "w": 862,
+        "h": 202
+    },
+    {
+        "id": "391a979a4a4c1fc1",
+        "type": "websocket in",
+        "z": "4f37c0534953b353",
+        "g": "b7d831285641cc2f",
+        "name": "Streaming PC",
+        "server": "",
+        "client": "eba9febc9d403ba5",
+        "x": 140,
+        "y": 140,
+        "wires": [
+            [
+                "45780b6f11f5b99a"
+            ]
+        ]
+    },
+    {
+        "id": "a60d381e56a54435",
+        "type": "switch",
+        "z": "4f37c0534953b353",
+        "g": "b7d831285641cc2f",
+        "name": "op switch",
+        "property": "payload.op",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "5",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "7",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 4,
+        "x": 410,
+        "y": 140,
+        "wires": [
+            [
+                "9006d213aaee1cd8"
+            ],
+            [
+                "c846858f1c91f5de"
+            ],
+            [
+                "f27781296b87a4af"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "9006d213aaee1cd8",
+        "type": "function",
+        "z": "4f37c0534953b353",
+        "g": "b7d831285641cc2f",
+        "name": "Connect",
+        "func": "let out = {\n    payload : {\n        \"op\": 1,\n        \"d\": {\n            \"rpcVersion\": 1,\n        }\n    }\n}\n\nif (msg.payload.d.hasOwnProperty(\"authentication\")) {\n    const pass = flow.get(\"OBS_WS_Pass\") || \"\";\n    const salt = msg.payload.d.authentication.salt;\n    const challenge = msg.payload.d.authentication.challenge;\n\n    let auth = pass + salt;\n    auth = crypto.createHash('sha256').update(auth).digest('base64');\n    auth = auth + challenge;\n    auth = crypto.createHash('sha256').update(auth).digest('base64');\n\n    out.payload.d.authentication = auth;\n\n    return out;\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "crypto",
+                "module": "crypto"
+            }
+        ],
+        "x": 600,
+        "y": 120,
+        "wires": [
+            [
+                "3787becc015fa073"
+            ]
+        ]
+    },
+    {
+        "id": "3787becc015fa073",
+        "type": "websocket out",
+        "z": "4f37c0534953b353",
+        "g": "b7d831285641cc2f",
+        "name": "Streaming PC",
+        "server": "",
+        "client": "eba9febc9d403ba5",
+        "x": 800,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "45780b6f11f5b99a",
+        "type": "json",
+        "z": "4f37c0534953b353",
+        "g": "b7d831285641cc2f",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 280,
+        "y": 140,
+        "wires": [
+            [
+                "a60d381e56a54435",
+                "581780d8dc6ccd30"
+            ]
+        ]
+    },
+    {
+        "id": "90d567eaddb20e3a",
+        "type": "change",
+        "z": "4f37c0534953b353",
+        "g": "b7d831285641cc2f",
+        "name": "Set password",
+        "rules": [
+            {
+                "t": "set",
+                "p": "OBS_WS_Pass",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 430,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c846858f1c91f5de",
+        "type": "link out",
+        "z": "4f37c0534953b353",
+        "g": "b7d831285641cc2f",
+        "name": "OBS WS Event",
+        "mode": "link",
+        "links": [],
+        "x": 620,
+        "y": 160,
+        "wires": [],
+        "l": true
+    },
+    {
+        "id": "9ee3b7ccf1147e28",
+        "type": "link in",
+        "z": "4f37c0534953b353",
+        "g": "b7d831285641cc2f",
+        "name": "To OBS WS",
+        "links": [
+            "446dbf62cfadcd2a"
+        ],
+        "x": 610,
+        "y": 80,
+        "wires": [
+            [
+                "3787becc015fa073"
+            ]
+        ],
+        "l": true
+    },
+    {
+        "id": "cd0687167dd19b85",
+        "type": "inject",
+        "z": "4f37c0534953b353",
+        "g": "b7d831285641cc2f",
+        "name": "PASSWORD HERE",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "PASSWORD",
+        "payloadType": "str",
+        "x": 230,
+        "y": 80,
+        "wires": [
+            [
+                "90d567eaddb20e3a"
+            ]
+        ]
+    },
+    {
+        "id": "581780d8dc6ccd30",
+        "type": "function",
+        "z": "4f37c0534953b353",
+        "g": "b7d831285641cc2f",
+        "name": "Catch error",
+        "func": "const keyExists = (obj, key) => {\n    if (!obj || (typeof obj !== \"object\" && !Array.isArray(obj))) {\n        return false;\n    }\n    else if (obj.hasOwnProperty(key)) {\n        return true;\n    }\n    else if (Array.isArray(obj)) {\n        for (let i = 0; i < obj.length; i++) {\n            const result = keyExists(obj[i], key);\n            if (result) {\n                return result;\n            }\n        }\n    }\n    else {\n        for (const k in obj) {\n            const result = keyExists(obj[k], key);\n            if (result) {\n                return result;\n            }\n        }\n    }\n\n    return false;\n};\n\nif (keyExists(msg, \"code\") && (msg.payload.d.requestStatus.code == 600 || msg.payload.d.requestStatus.code == 300) ){\n    node.warn(msg.payload.d.requestStatus.comment);\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f27781296b87a4af",
+        "type": "link out",
+        "z": "4f37c0534953b353",
+        "g": "b7d831285641cc2f",
+        "name": "OBS WS Response",
+        "mode": "link",
+        "links": [
+            "cb3a1099c8ee17d7"
+        ],
+        "x": 630,
+        "y": 200,
+        "wires": [],
+        "l": true
+    },
+    {
+        "id": "eba9febc9d403ba5",
+        "type": "websocket-client",
+        "path": "ws://192.168.1.10:4455",
+        "tls": "",
+        "wholemsg": "false",
+        "hb": "0",
+        "subprotocol": ""
+    },
+    {
+        "id": "a5b46f2618e4bc77",
+        "type": "group",
+        "z": "4f37c0534953b353",
+        "name": "Examples",
+        "style": {
+            "stroke": "#000000",
+            "fill": "#7fb7df",
+            "fill-opacity": "0.45",
+            "label": true,
+            "color": "#000000"
+        },
+        "nodes": [
+            "d7e32ba8aa20813f",
+            "4661b0f677b7b672",
+            "5f9961fc97555c55",
+            "446dbf62cfadcd2a",
+            "1132dfc7c712468e",
+            "70f35d7dceec5dec",
+            "cb3a1099c8ee17d7",
+            "d163f177b076d961",
+            "a899340b6b5f10ba",
+            "473e48531852cfc5",
+            "5ccc435f681d0419",
+            "fade8777fa54a460",
+            "9611ef58121d7a1d",
+            "f94475386394e158"
+        ],
+        "x": 44,
+        "y": 249,
+        "w": 762,
+        "h": 372
+    },
+    {
+        "id": "d7e32ba8aa20813f",
+        "type": "function",
+        "z": "4f37c0534953b353",
+        "g": "a5b46f2618e4bc77",
+        "name": "Switch scene",
+        "func": "return {\n    payload: {\n        \"op\": 6,\n        \"d\": {\n            \"requestType\": \"SetCurrentProgramScene\",\n            \"requestId\": msg._msgid,\n            \"requestData\": {\n                \"sceneName\": msg.payload\n            }\n        }\n    }\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 310,
+        "wires": [
+            [
+                "446dbf62cfadcd2a"
+            ]
+        ]
+    },
+    {
+        "id": "4661b0f677b7b672",
+        "type": "inject",
+        "z": "4f37c0534953b353",
+        "g": "a5b46f2618e4bc77",
+        "name": "SCENE 1",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "Waiting Screen",
+        "payloadType": "str",
+        "x": 150,
+        "y": 290,
+        "wires": [
+            [
+                "d7e32ba8aa20813f"
+            ]
+        ]
+    },
+    {
+        "id": "5f9961fc97555c55",
+        "type": "inject",
+        "z": "4f37c0534953b353",
+        "g": "a5b46f2618e4bc77",
+        "name": "SCENE 2",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "Talk Chat",
+        "payloadType": "str",
+        "x": 150,
+        "y": 330,
+        "wires": [
+            [
+                "d7e32ba8aa20813f"
+            ]
+        ]
+    },
+    {
+        "id": "446dbf62cfadcd2a",
+        "type": "link out",
+        "z": "4f37c0534953b353",
+        "g": "a5b46f2618e4bc77",
+        "name": "OBS WS",
+        "mode": "link",
+        "links": [
+            "9ee3b7ccf1147e28"
+        ],
+        "x": 720,
+        "y": 420,
+        "wires": [],
+        "l": true
+    },
+    {
+        "id": "1132dfc7c712468e",
+        "type": "inject",
+        "z": "4f37c0534953b353",
+        "g": "a5b46f2618e4bc77",
+        "name": "Trigger",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 540,
+        "wires": [
+            [
+                "70f35d7dceec5dec"
+            ]
+        ]
+    },
+    {
+        "id": "70f35d7dceec5dec",
+        "type": "function",
+        "z": "4f37c0534953b353",
+        "g": "a5b46f2618e4bc77",
+        "name": "Get Stats",
+        "func": "return {\n    payload: {\n        \"op\": 6,\n        \"d\": {\n            \"requestType\": \"GetStats\",\n            \"requestId\": msg._msgid,\n        }\n    }\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 540,
+        "wires": [
+            [
+                "446dbf62cfadcd2a"
+            ]
+        ]
+    },
+    {
+        "id": "cb3a1099c8ee17d7",
+        "type": "link in",
+        "z": "4f37c0534953b353",
+        "g": "a5b46f2618e4bc77",
+        "name": "OBS WS resp",
+        "links": [
+            "f27781296b87a4af"
+        ],
+        "x": 140,
+        "y": 580,
+        "wires": [
+            [
+                "d163f177b076d961"
+            ]
+        ],
+        "l": true
+    },
+    {
+        "id": "d163f177b076d961",
+        "type": "function",
+        "z": "4f37c0534953b353",
+        "g": "a5b46f2618e4bc77",
+        "name": "Extract Stats",
+        "func": "if (msg.payload.d.requestType == \"GetStats\"){\n    return { payload: msg.payload.d.responseData}\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 580,
+        "wires": [
+            [
+                "a899340b6b5f10ba"
+            ]
+        ]
+    },
+    {
+        "id": "a899340b6b5f10ba",
+        "type": "debug",
+        "z": "4f37c0534953b353",
+        "g": "a5b46f2618e4bc77",
+        "name": "Stats",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 540,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "473e48531852cfc5",
+        "type": "function",
+        "z": "4f37c0534953b353",
+        "g": "a5b46f2618e4bc77",
+        "name": "Edit Text",
+        "func": "return {\n    payload: {\n        \"op\": 6,\n        \"d\": {\n            \"requestType\": \"SetInputSettings\",\n            \"requestId\": msg._msgid,\n            \"requestData\": {\n                \"inputName\": msg.topic,\n                \"inputSettings\" : {\n                    \"text\" : msg.payload\n                }\n            }\n        }\n    }\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 390,
+        "wires": [
+            [
+                "446dbf62cfadcd2a"
+            ]
+        ]
+    },
+    {
+        "id": "5ccc435f681d0419",
+        "type": "inject",
+        "z": "4f37c0534953b353",
+        "g": "a5b46f2618e4bc77",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "Test text",
+        "payload": "Hello World",
+        "payloadType": "str",
+        "x": 180,
+        "y": 390,
+        "wires": [
+            [
+                "473e48531852cfc5"
+            ]
+        ]
+    },
+    {
+        "id": "fade8777fa54a460",
+        "type": "function",
+        "z": "4f37c0534953b353",
+        "g": "a5b46f2618e4bc77",
+        "name": "Mute audio source",
+        "func": "return {\n    payload: {\n        \"op\": 6,\n        \"d\": {\n            \"requestType\": \"SetInputMute\",\n            \"requestId\": msg._msgid,\n            \"requestData\": {\n                \"inputName\": \"Audio du Bureau\",\n                \"inputMuted\" : msg.payload\n            }\n        }\n    }\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 450,
+        "wires": [
+            [
+                "446dbf62cfadcd2a"
+            ]
+        ]
+    },
+    {
+        "id": "9611ef58121d7a1d",
+        "type": "inject",
+        "z": "4f37c0534953b353",
+        "g": "a5b46f2618e4bc77",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 450,
+        "wires": [
+            [
+                "fade8777fa54a460"
+            ]
+        ]
+    },
+    {
+        "id": "f94475386394e158",
+        "type": "inject",
+        "z": "4f37c0534953b353",
+        "g": "a5b46f2618e4bc77",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 490,
+        "wires": [
+            [
+                "fade8777fa54a460"
+            ]
+        ]
+    }
+]
