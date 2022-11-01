@@ -3,6 +3,7 @@ Node-RED flow to control OBS using OBS Websocket 5.X
 
 ## Prerequisites 
 - [Node-RED](https://nodered.org/)
+- External modules enabled on the [settings.js](https://nodered.org/docs/user-guide/runtime/settings-file) file = > *functionExternalModules: true* 
 - [OBS Studio](https://obsproject.com/) > 28.x (OBS WS 5.x is included by default)
   - If you are using OBS < 28.x you need to install [OBS WS 5.X](https://github.com/obsproject/obs-websocket/releases/tag/5.0.1) manually 
 
