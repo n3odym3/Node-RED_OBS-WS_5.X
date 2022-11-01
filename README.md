@@ -31,7 +31,26 @@ Node-RED flow to control OBS using OBS Websocket 5.X
 
 - DONE !
 
+## Setup (Demo GUI)
+- Import the [flow](https://github.com/n3odym3/Node-RED_OBS-WS_5.X/blob/main/flows/DashboardDemo.json)
+- Set the password and clic on the button 
+
+<img src="https://github.com/n3odym3/Node-RED_OBS-WS_5.X/blob/main/img/passwordgui.PNG" width="35%">
+
+- Try the dashboard 
+  - Switch scene
+  - Edit text source
+  - Select autio source
+  - Toggle Mute
+  - Set the volume
+
+<img src="https://github.com/n3odym3/Node-RED_OBS-WS_5.X/blob/main/img/dashboard.PNG" width="50%">
+ 
+ - DONE ! 
+
 Go to the [OBS WS 5.0 documentation](https://github.com/obsproject/obs-websocket/blob/master/docs/generated/protocol.md#events-table-of-contents) for more infos 
+
+
 
 
 
